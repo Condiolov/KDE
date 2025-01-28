@@ -95,7 +95,7 @@ PlasmoidItem {
                             var moedaPercent = moedaInfo.CHANGEPCT24HOUR;
                             var moedaColor = moedaPercent > 0 ? cor2 : cor3;
                             // console.log(moedaInfo +currentPrice)
-                            label += "<b><font color='" + cor1 + "' size='7'>" + moedaSymbol.substring(0, 1).toUpperCase() + "$ <font color='" + moedaColor + "'>" + currentPrice.toFixed(2) + "</font></b> <i><font family='Arial' color='" + cor4 + "' pixelSize='12'>" + moedaPercent.toFixed(2) + "%</font></i><br>";
+                            label += "<b><font color='" + cor1 + "' size='7'>" + moedaSymbol.substring(0, 1).toUpperCase() + "$ <font color='" + moedaColor + "'>" + currentPrice.toFixed(6) + "</font></b> <i><font family='Arial' color='" + cor4 + "' pixelSize='12'>" + moedaPercent.toFixed(2) + "%</font></i><br>";
                         }
                     }
                 } else {

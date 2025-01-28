@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0 http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+  <kcfgfile name=""/>
+  <group name="General">
+    <entry name="moedas" type="String">
+      <default>BTC,ETH,XRP</default>
+    </entry>
+    <entry name="fundo" type="String">
+      <default>#5a000000</default>
+    </entry>
+    <entry name="tempo" type="Int">
+      <default>60</default>
+    </entry>
+    <entry name="cor1" type="String">
+      <default>#ffffff</default>
+    </entry>
+    <entry name="cor2" type="String">
+      <default>#00ff00</default>
+    </entry>
+    <entry name="cor3" type="String">
+      <default>#ff0000</default>
+    </entry>
+    <entry name="cor4" type="String">
+      <default>#989898</default>
+    </entry>
+  </group>
+</kcfg>

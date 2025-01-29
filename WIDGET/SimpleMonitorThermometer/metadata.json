@@ -1,0 +1,30 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "thiagocondiolov@hotmail.com",
+                "Name": "Thiago Condé"
+            }
+        ],
+        "BugReportUrl": "",
+        "Category": "Monitoring",
+        "Description": "Simple monitor thermometer, for cpu or gpu or any other that returns an integer",
+        "EnabledByDefault": true,
+        "FormFactors": [
+            "tablet",
+            "handset",
+            "desktop"
+        ],
+        "Icon": "applications-system-symbolic",
+        "Id": "SimpleMonitorThermometer1.0",
+        "License": "GPL-2.0+",
+        "Name": "Crypto Price Monitor",
+        "Website": "https://github.com/Condiolov/KDE/tree/main/WIDGET/SimpleMonitorThermometer",
+        "X-Plasma-API": "declarativeappletscript",
+        "X-Plasma-MainScript": "ui/main.qml",
+        "X-Plasma-Config": "config/config.qml",
+        "X-Plasma-BackgroundHints": "NoBackground"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

@@ -26,7 +26,7 @@
             "desktop"
         ],
         "Icon": "cryptocurrency-symbolic",
-        "Id": "CryptoMonitor",
+        "Id": "CryptoMonitor1",
         "License": "GPL-2.0+",
         "Website": "https://github.com/Condiolov/KDE/tree/main/WIDGET",
         "X-Plasma-API": "declarativeappletscript",

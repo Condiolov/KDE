@@ -4,23 +4,31 @@
         "Authors": [
             {
                 "Email": "thiagocondiolov@hotmail.com",
-                "Name": "Thiago Condé"
+                "Name": "Thiago Condé de Oliveira"
             }
         ],
-        "BugReportUrl": "",
-        "Category": "Monitoring",
-        "Description": "Cryptocurrency price monitoring applet",
+        "BugReportUrl": "https://github.com/Condiolov/KDE/issues",
+        "Category": "Monitoring,Finance",
+        "Description": {
+            "en": "Cryptocurrency price monitoring applet. Supports multiple cryptocurrencies and exchanges.",
+            "pt_BR": "Applet de monitoramento de preços de criptomoedas. Suporta múltiplas criptomoedas e exchanges.",
+            "es": "Applet de monitoreo de precios de criptomonedas. Soporta múltiples criptomonedas y exchanges."
+        },
+        "Name": {
+            "en": "Crypto Price Monitor",
+            "pt_BR": "Monitor de Preços de Criptomoedas",
+            "es": "Monitor de Precios de Criptomonedas"
+        },
         "EnabledByDefault": true,
         "FormFactors": [
             "tablet",
             "handset",
             "desktop"
         ],
-        "Icon": "applications-system-symbolic",
+        "Icon": "cryptocurrency-symbolic",
         "Id": "CryptoMonitor",
         "License": "GPL-2.0+",
-        "Name": "Crypto Price Monitor",
-        "Website": "https://userbase.kde.org/Plasma/crypto_price_monitor3",
+        "Website": "https://github.com/Condiolov/KDE/tree/main/WIDGET",
         "X-Plasma-API": "declarativeappletscript",
         "X-Plasma-MainScript": "ui/main.qml",
         "X-Plasma-Config": "config/config.qml",

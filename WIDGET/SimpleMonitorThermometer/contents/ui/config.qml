@@ -3,10 +3,12 @@ import QtQuick.Layouts 1.15
 import QtQuick 2.0
 import org.kde.kirigami 2.4 as Kirigami
 import org.kde.kquickcontrols 2.0 as KQControls
+import QtQuick.Controls 2.5 as QQC2
 
 Kirigami.FormLayout {
 	property alias cfg_comando: comando.text
 	property alias cfg_tempo: tempo.value
+	property alias cfg_show_icon: show_icon.checked
 
 	ColumnLayout {
 		Layout.fillWidth: true
@@ -43,6 +45,10 @@ Kirigami.FormLayout {
 				Layout.fillWidth: true
 			}
 		}
+		RowLayout {
+			QQC2.CheckBox {id:show_icon;text: "Hide icon and label";checked: cfg_show_icon;onClicked: cfg_show_icon.checked = !cfg_show_icon.checked}
+		}
+
 
 		RowLayout {
 			Text {

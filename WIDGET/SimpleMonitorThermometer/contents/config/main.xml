@@ -8,5 +8,8 @@
     <entry name="tempo" type="int">
       <default>60</default>
     </entry>
+    <entry name="show_icon" type="bool">
+      <default>false</default>
+    </entry>
   </group>
 </kcfg>

@@ -17,7 +17,7 @@
             "desktop"
         ],
         "Icon": "applications-system-symbolic",
-        "Id": "SimpleMonitorThermometer1.0",
+        "Id": "SimpleMonitorThermometer3",
         "License": "GPL-2.0+",
         "Name": "Crypto Price Monitor",
         "Website": "https://github.com/Condiolov/KDE/tree/main/WIDGET/SimpleMonitorThermometer",

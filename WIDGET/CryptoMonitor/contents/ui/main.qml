@@ -14,8 +14,9 @@ PlasmoidItem {
 	property color cor3: plasmoid.configuration.cor3
 	property color cor4: plasmoid.configuration.cor4
 	property color fundo: plasmoid.configuration.fundo
-	property string label: plasmoid.configuration.label
-	property bool carregando
+	property string label //: plasmoid.configuration.label
+	property bool carregando: false
+	property bool inicializacaoConcluida: false
 	property int qnt_moeda : moedas.split(",").length
 	Plasmoid.backgroundHints:PlasmaCore.Types.NoBackground
 	// property string apiUrl: "https://production.api.coindesk.com/v2/tb/price/ticker?assets=" + moedas
@@ -95,6 +96,7 @@ PlasmoidItem {
 
 	// Função para pegar os preços das criptomoedas
 	function fetchPrices() {
+		/*request.timeout = 5000; */// Define um timeout de 5 segundos para a requisição
 		root.carregando = true
 		var request = new XMLHttpRequest()
 		request.open("GET", apiUrl, true)
@@ -128,6 +130,8 @@ PlasmoidItem {
 					updateTimer.running = false;
 				}
 			}
+
+
 		}
 		request.send()
 	}
@@ -155,11 +159,26 @@ PlasmoidItem {
 			fetchPrices()
 		}
 	}
+	Timer {
+		id: monitorarCarregamentoTimer
+		interval: 5000 // 5 segundos
+		running: false
+		repeat: false
+		onTriggered: {
+			if (root.carregando) {
+				console.log("Carregamento demorou mais de 5 segundos. Tentando novamente...");
+				fetchPrices(); // Chama fetchPrices novamente
+			}
+		}
+	}
 	Connections {
 		target: root  // Ou outro objeto onde a propriedade é declarada
 		onMoedasChanged: updateTimer.running = true;
 	}
 
-	Component.onCompleted: fetchPrices()
+	Component.onCompleted: {
+		fetchPrices()
+		monitorarCarregamentoTimer.start();
+	}
 
 }

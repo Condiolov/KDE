@@ -11,6 +11,7 @@ import org.kde.plasma.plasma5support as Plasma5Support
 PlasmoidItem {
 	id: root
 	property int tempoAtualizacao: plasmoid.configuration.tempo
+	property int range: plasmoid.configuration.range
 	property string comandoUSER: plasmoid.configuration.comando
 	Plasmoid.backgroundHints:PlasmaCore.Types.NoBackground
 
@@ -51,9 +52,11 @@ Rectangle {
 	// ToolTip.visible: hovered
 	id: retangulo
 	width: !show_icon ? 4 * icon.width/22 : 7
-	height: !show_icon ? root.value * icon.height/110 :  root.value * root.height/100
+
+	// height: !show_icon ? root.value * icon.height/110 :  root.value * root.height/100
+	height: !show_icon ? root.value / range * 100 * icon.height/110 :  root.value / range * 100 * root.height/100
 	color: getColor(root.value)
-	radius: 3 // Bordas arredondadas
+	radius: icon.height * .3 // Bordas arredondadas
 	anchors.horizontalCenter: !show_icon ? icon.horizontalCenter : root.horizontalCenter
 	// anchors.verticalCenter: parent.verticalCenter
 	anchors.bottom: !show_icon ? icon.bottom : root.bottom
@@ -101,6 +104,8 @@ Kirigami.Icon {
 		}
 	}
 	function getColor(value) {
+
+		value= value / range * 100
 		let red = 0, green = 0;
 
 		if (value < 30) {
@@ -138,7 +143,7 @@ Kirigami.Icon {
 			var code = data["exit code"]
 
 			// console.log("Comando executado: " + cmd)
-			console.log("Saída: " + out)
+			// console.log("Saída: " + out)
 			// console.log("Erro: " + err)
 			// console.log("Código de saída: " + code)
 

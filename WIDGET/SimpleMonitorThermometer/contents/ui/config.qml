@@ -8,45 +8,54 @@ import QtQuick.Controls 2.5 as QQC2
 Kirigami.FormLayout {
 	property alias cfg_comando: comando.text
 	property alias cfg_tempo: tempo.value
+	property alias cfg_range: range.value
 	property alias cfg_show_icon: show_icon.checked
 
 	ColumnLayout {
 		Layout.fillWidth: true
-		RowLayout {
-			Text {
-				color:"#fff"
-				text: i18n("UPDATE")
-				font.bold: true
+		ColumnLayout {
+			RowLayout {
+				Text {
+					color:"#fff"; text: i18n("UPDATE (seconds)"); font.bold: true
+				}
 			}
-		}
-		RowLayout {
-			SpinBox {
-				id: tempo
-				from:1
-				to: 300
-				stepSize: 1
-				editable: true
-				value: cfg_tempoDefault
-				Layout.fillWidth: true
+			RowLayout {
+				SpinBox {
+					id: tempo; from:1; to: 300; stepSize: 1; editable: true; value: cfg_tempoDefault; Layout.fillWidth: true
+				}
 			}
 		}
 		ColumnLayout {
 			RowLayout {
 				Text {
-					text: i18n("COMMAND")
-					color:"#fff"
-					font.bold: true
+					color:"#fff"; text: i18n("RANGE (default 0-100)"); font.bold: true
 				}
 			}
-			TextField {
-				id: comando
-				placeholderText: i18n("just whole numbers*")
-				text: cfg_comandoDefault
-				Layout.fillWidth: true
+
+			RowLayout {
+				SpinBox {
+					id: range; from:1; to: 100000; stepSize: 1; editable: true; value: cfg_range; Layout.fillWidth: true
+				}
 			}
 		}
+		ColumnLayout {
+			RowLayout {
+				Text {
+					text: i18n("COMMAND"); color: "#fff"; font.bold: true
+				}
+			}
+
+			RowLayout {
+				TextField {
+					id: comando; placeholderText: i18n("just whole numbers*"); text: cfg_comandoDefault; Layout.fillWidth: true
+				}
+			}
+		}
+
 		RowLayout {
-			QQC2.CheckBox {id:show_icon;text: "Hide icon and label";checked: cfg_show_icon;onClicked: cfg_show_icon.checked = !cfg_show_icon.checked}
+			QQC2.CheckBox {
+				id: show_icon; text: "Hide icon and label"; checked: cfg_show_icon; onClicked: cfg_show_icon.checked = !cfg_show_icon.checked
+			}
 		}
 
 

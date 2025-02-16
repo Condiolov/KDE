@@ -98,6 +98,7 @@ Kirigami.FormLayout {
             }
 
             RowLayout {
+                // Layout.alignment: Qt.AlignCenter
                 anchors.centerIn: space // Centraliza o RowLayout das cores
                 KQControls.ColorButton {
                     id: fundo

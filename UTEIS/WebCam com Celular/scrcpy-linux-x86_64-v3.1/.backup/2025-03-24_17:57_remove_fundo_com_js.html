@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Remover Fundo da Webcam com Desfoque e Bordas Suaves</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@latest"></script>
+</head>
+<body>
+  <video id="video" width="1000" height="480" autoplay style="display:none;"></video>
+  <canvas id="canvas" width="1000" height="480"></canvas>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Acessar a webcam
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => console.error("Erro ao acessar webcam:", err));
+
+    // Carregar o modelo BodyPix
+    async function loadBodyPix() {
+      const net = await bodyPix.load({
+        architecture: 'MobileNetV1',
+        outputStride: 16,
+        multiplier: 0.75,
+        quantBytes: 2
+      });
+      segmentBackground(net);
+    }
+
+    // Segmentar e aplicar desfoque no fundo com bordas suaves
+    async function segmentBackground(net) {
+      if (video.readyState === 4) {
+        const segmentation = await net.segmentPerson(video, {
+          internalResolution: 'medium',
+          segmentationThreshold: 0.5
+        });
+
+        // 1. Desenhar o vídeo desfocado no canvas (fundo)
+        ctx.filter = 'blur(10px)'; // Desfoque do fundo
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        ctx.filter = 'none';
+
+        // 2. Criar um canvas temporário para a máscara suavizada
+        const maskCanvas = document.createElement('canvas');
+        maskCanvas.width = canvas.width;
+        maskCanvas.height = canvas.height;
+        const maskCtx = maskCanvas.getContext('2d');
+
+        // 3. Desenhar a máscara de segmentação como imagem em escala de cinza
+        const maskData = new ImageData(canvas.width, canvas.height);
+        for (let i = 0; i < segmentation.data.length; i++) {
+          const value = segmentation.data[i] ? 255 : 0; // 255 para pessoa, 0 para fundo
+          maskData.data[i * 4] = value;     // R
+          maskData.data[i * 4 + 1] = value; // G
+          maskData.data[i * 4 + 2] = value; // B
+          maskData.data[i * 4 + 3] = 255;   // Alpha
+        }
+        maskCtx.putImageData(maskData, 0, 0);
+
+        // 4. Aplicar desfoque na máscara para suavizar as bordas
+        maskCtx.filter = 'blur(20px)'; // Desfoque da máscara (ajuste aqui)
+        maskCtx.drawImage(maskCanvas, 0, 0);
+        maskCtx.filter = 'none';
+        const smoothedMask = maskCtx.getImageData(0, 0, canvas.width, canvas.height);
+
+        // 5. Criar a camada da pessoa
+        const personCanvas = document.createElement('canvas');
+        personCanvas.width = canvas.width;
+        personCanvas.height = canvas.height;
+        const personCtx = personCanvas.getContext('2d');
+        personCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const personData = personCtx.getImageData(0, 0, canvas.width, canvas.height);
+        const pixelData = personData.data;
+
+        // 6. Aplicar a máscara suavizada
+        for (let i = 0; i < pixelData.length; i += 4) {
+          const alpha = smoothedMask.data[i] / 255; // Valor suavizado de 0 a 1
+          pixelData[i + 3] = pixelData[i + 3] * alpha; // Ajustar transparência
+        }
+        personCtx.putImageData(personData, 0, 0);
+
+        // 7. Desenhar a pessoa sobre o fundo desfocado
+        ctx.drawImage(personCanvas, 0, 0);
+      }
+      requestAnimationFrame(() => segmentBackground(net));
+    }
+
+    // Iniciar
+    loadBodyPix();
+  </script>
+</body>
+</html>

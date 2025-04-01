@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pessoa no Quadrado</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@latest"></script>
+  <style>
+    body { margin: 0; background: black; }
+    canvas { display: block; margin: 0 auto; background: black; }
+  </style>
+</head>
+<body>
+  <video id="video" width="640" height="480" autoplay style="display:none;"></video>
+  <canvas id="canvas"></canvas>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Configurações do quadrado
+    const SQUARE_SIZE = 480; // Tamanho fixo do quadrado de saída
+    canvas.width = SQUARE_SIZE;
+    canvas.height = SQUARE_SIZE;
+
+    // Acessar a webcam
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => console.error("Erro ao acessar webcam:", err));
+
+    // Carregar o modelo BodyPix
+    async function loadBodyPix() {
+      const net = await bodyPix.load({
+        architecture: 'MobileNetV1',
+        outputStride: 16,
+        multiplier: 0.75,
+        quantBytes: 2
+      });
+      processFrame(net);
+    }
+
+    async function processFrame(net) {
+      if (video.readyState === 4) {
+        // 1. Detectar a pessoa
+        const segmentation = await net.segmentPerson(video, {
+          internalResolution: 'medium',
+          segmentationThreshold: 0.7
+        });
+
+        // 2. Criar máscara
+        const maskCanvas = document.createElement('canvas');
+        maskCanvas.width = video.width;
+        maskCanvas.height = video.height;
+        const maskCtx = maskCanvas.getContext('2d');
+
+        const mask = bodyPix.toMask(segmentation);
+        maskCtx.putImageData(mask, 0, 0);
+
+        // 3. Aplicar máscara suavizada
+        maskCtx.filter = 'blur(8px)';
+        maskCtx.drawImage(maskCanvas, 0, 0);
+        maskCtx.filter = 'none';
+
+        // 4. Calcular área do corpo
+        let minX = video.width, minY = video.height, maxX = 0, maxY = 0;
+        let hasPerson = false;
+
+        for (let y = 0; y < video.height; y++) {
+          for (let x = 0; x < video.width; x++) {
+            if (segmentation.data[y * video.width + x]) {
+              minX = Math.min(minX, x);
+              maxX = Math.max(maxX, x);
+              minY = Math.min(minY, y);
+              maxY = Math.max(maxY, y);
+              hasPerson = true;
+            }
+          }
+        }
+
+        // 5. Se detectou pessoa, cortar e centralizar
+        if (hasPerson) {
+          const width = maxX - minX;
+          const height = maxY - minY;
+          const side = Math.max(width, height);
+          const centerX = (minX + maxX) / 2;
+          const centerY = (minY + maxY) / 2;
+
+          // Área de recorte
+          const cropX = Math.max(0, centerX - side/2);
+          const cropY = Math.max(0, centerY - side/2);
+          const cropSize = Math.min(side, video.width - cropX, video.height - cropY);
+
+          // 6. Criar imagem isolada da pessoa
+          const tempCanvas = document.createElement('canvas');
+          tempCanvas.width = cropSize;
+          tempCanvas.height = cropSize;
+          const tempCtx = tempCanvas.getContext('2d');
+
+          // Desenhar apenas a pessoa (com fundo transparente)
+          tempCtx.drawImage(
+            video,
+            cropX, cropY, cropSize, cropSize,
+            0, 0, cropSize, cropSize
+          );
+
+          // Aplicar máscara
+          tempCtx.globalCompositeOperation = 'destination-in';
+          tempCtx.drawImage(
+            maskCanvas,
+            cropX, cropY, cropSize, cropSize,
+            0, 0, cropSize, cropSize
+          );
+
+          // 7. Redimensionar para o quadrado de saída
+          ctx.clearRect(0, 0, SQUARE_SIZE, SQUARE_SIZE);
+          ctx.drawImage(
+            tempCanvas,
+            0, 0, cropSize, cropSize,
+            0, 0, SQUARE_SIZE, SQUARE_SIZE
+          );
+        } else {
+          ctx.clearRect(0, 0, SQUARE_SIZE, SQUARE_SIZE);
+        }
+      }
+      requestAnimationFrame(() => processFrame(net));
+    }
+
+    loadBodyPix();
+  </script>
+</body>
+</html>

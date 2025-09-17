@@ -9,8 +9,8 @@
 #------------------------------------------------------------------------------
 
 NOME_ARQUIVO="$1"
-PASTA="./_backup" # /home/thiago/backup
+PASTA="./.backup" # /home/thiago/backup
 
 mkdir -p "$PASTA"
-cp "$NOME_ARQUIVO" "$PASTA/${NOME_ARQUIVO}_$(date +"%Y-%m-%d_%H:%M:%S")"
+cp "$NOME_ARQUIVO" "$PASTA/$(date +"%Y-%m-%d_%H:%M:%S")_${NOME_ARQUIVO}"
 command -v kdialog >/dev/null && kdialog --passivepopup "Backup completo $NOME_ARQUIVO!" 3 --icon backup --title "backup_file"
